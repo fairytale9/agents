@@ -51,6 +51,7 @@ from tf_agents.environments import tf_py_environment
 from tf_agents.eval import metric_utils
 from tf_agents.metrics import tf_metrics
 from tf_agents.networks import actor_distribution_network
+from tf_agents.policies import policy_saver
 from tf_agents.policies import greedy_policy
 from tf_agents.policies import random_tf_policy
 from tf_agents.replay_buffers import tf_uniform_replay_buffer
@@ -224,11 +225,8 @@ def train_eval(
         global_step=global_step,
         metrics=metric_utils.MetricsGroup(train_metrics, 'train_metrics'),
     )
-    policy_checkpointer = common.Checkpointer(
-        ckpt_dir=os.path.join(train_dir, 'policy'),
-        policy=eval_policy,
-        global_step=global_step,
-    )
+    policy_dir = os.path.join(train_dir, 'policy')
+    tf_policy_saver = policy_saver.PolicySaver(eval_policy)
     rb_checkpointer = common.Checkpointer(
         ckpt_dir=os.path.join(train_dir, 'replay_buffer'),
         max_to_keep=1,
@@ -352,7 +350,7 @@ def train_eval(
         train_checkpointer.save(global_step=global_step_val)
 
       if global_step_val % policy_checkpoint_interval == 0:
-        policy_checkpointer.save(global_step=global_step_val)
+        tf_policy_saver.save(policy_dir)
 
       if global_step_val % rb_checkpoint_interval == 0:
         rb_checkpointer.save(global_step=global_step_val)
