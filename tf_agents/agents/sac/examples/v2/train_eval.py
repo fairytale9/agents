@@ -64,6 +64,9 @@ flags.DEFINE_string(
 )
 flags.DEFINE_multi_string('gin_file', None, 'Path to the trainer config files.')
 flags.DEFINE_multi_string('gin_param', None, 'Gin binding to pass through.')
+flags.DEFINE_string('env_name', 'HalfCheetah-v2',
+                    'Environment for training/evaluation.')
+flags.DEFINE_integer('num_iterations', 1000000, 'Number of iterations for training.')
 
 FLAGS = flags.FLAGS
 
@@ -71,14 +74,14 @@ FLAGS = flags.FLAGS
 @gin.configurable
 def train_eval(
     root_dir,
-    env_name='HalfCheetah-v2',
+    env_name=FLAGS.env_name,
     eval_env_name=None,
     env_load_fn=suite_mujoco.load,
     # The SAC paper reported:
     # Hopper and Cartpole results up to 1000000 iters,
     # Humanoid results up to 10000000 iters,
     # Other mujoco tasks up to 3000000 iters.
-    num_iterations=3000000,
+    num_iterations=FLAGS.num_iterations,
     actor_fc_layers=(256, 256),
     critic_obs_fc_layers=None,
     critic_action_fc_layers=None,
