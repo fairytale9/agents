@@ -74,7 +74,7 @@ flags.DEFINE_integer('num_iterations', 1000000, 'Number of iterations for traini
 @gin.configurable
 def train_eval(
     root_dir,
-    env_name=‘Humanoid-v2’,
+    env_name='Humanoid-v2',
     eval_env_name=None,
     env_load_fn=suite_mujoco.load,
     # The SAC paper reported:
