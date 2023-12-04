@@ -57,6 +57,7 @@ from tf_agents.policies import random_tf_policy
 from tf_agents.replay_buffers import tf_uniform_replay_buffer
 from tf_agents.utils import common
 
+FLAGS = flags.FLAGS
 
 flags.DEFINE_string(
     'root_dir',
@@ -69,20 +70,18 @@ flags.DEFINE_string('env_name', 'HalfCheetah-v2',
                     'Environment for training/evaluation.')
 flags.DEFINE_integer('num_iterations', 1000000, 'Number of iterations for training.')
 
-FLAGS = flags.FLAGS
-
 
 @gin.configurable
 def train_eval(
     root_dir,
-    env_name=FLAGS.env_name,
+    env_name=‘Humanoid-v2’,
     eval_env_name=None,
     env_load_fn=suite_mujoco.load,
     # The SAC paper reported:
     # Hopper and Cartpole results up to 1000000 iters,
     # Humanoid results up to 10000000 iters,
     # Other mujoco tasks up to 3000000 iters.
-    num_iterations=FLAGS.num_iterations,
+    num_iterations=1000000,
     actor_fc_layers=(256, 256),
     critic_obs_fc_layers=None,
     critic_action_fc_layers=None,
@@ -361,7 +360,7 @@ def main(_):
   tf.compat.v1.enable_v2_behavior()
   logging.set_verbosity(logging.INFO)
   gin.parse_config_files_and_bindings(FLAGS.gin_file, FLAGS.gin_param)
-  train_eval(FLAGS.root_dir)
+  train_eval(FLAGS.root_dir, env_name=FLAGS.env_name, num_iterations=FLAGS.num_iterations)
 
 
 if __name__ == '__main__':
